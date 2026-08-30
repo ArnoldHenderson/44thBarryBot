@@ -1,0 +1,14 @@
+[
+    {
+        "WelcomeMessageID": 1,
+        "Message": "Message 1 Test {user}"
+    },
+    {
+        "WelcomeMessageID": 2,
+        "Message": "Message 2 Test {user}"
+    },
+    {
+        "WelcomeMessageID": 3,
+        "Message": "Message 3 Test {user}"
+    }
+]
