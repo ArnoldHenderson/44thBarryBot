@@ -25,7 +25,11 @@ const handler : EventHandler<'guildMemberAdd'> = async (member) => {
         return;
     }
 
-    channel.send(randomMessage.replace('{user}', `<@${member.id}>`));
+    channel.send(randomMessage.replace('{user}', `<@${member.id}>`)
+        .replace('{how-to-enlist}', '<#' + process.env.HOW_TO_ENLIST_CHANNEL + '>')
+        .replace('{application-form}', '<#' + process.env.APPLICATION_FORM_CHANNEL + '>')
+        .replace('{help-channel}', '<#' + process.env.HELP_CHANNEL + '>').replace('{application-channel}', '<#' + process.env.APPLICATION_FORM_CHANNEL + '>')
+    );
 };
 
 export default handler;

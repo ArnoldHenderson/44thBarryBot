@@ -1,14 +1,14 @@
 [
     {
         "WelcomeMessageID": 1,
-        "Message": "Message 1 Test {user}"
+        "Message": "Welcome in {user}! \n \nMake sure you go to the {how-to-enlist} and watch the video on there. Also make sure sure to submit an application at {application-channel}. \n \nIf you have any questions, put them here in {help-channel}. Can't wait to see you boys on the field fighting for the 44th! \n-# If you are here as a regiment representative, you can ignore this message."
     },
     {
         "WelcomeMessageID": 2,
-        "Message": "Message 2 Test {user}"
+        "Message": "{user} welcome to the 44th! \n \nIf you haven't already done so, please check out the {how-to-enlist} and fill out the {application-form} at your earliest convenience. \n \nWe look forward to seeing you in the field. If you have any questions, please put them here in the {help-channel} and someone will be able to help you. \n-# If you are here as a regiment representative, you can ignore this message."
     },
     {
         "WelcomeMessageID": 3,
-        "Message": "Message 3 Test {user}"
+        "Message": "Welcome {user}! \n \nThis is the start of your journey with us so please watch the {how-to-enlist} video and fill out the {application-form} at your earliest convenience. \n \nIf you have any questions, please put them here in the {help-channel} and someone will be able to help you. \n-# If you are here as a regiment representative, you can ignore this message."
     }
 ]
