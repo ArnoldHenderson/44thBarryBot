@@ -10,5 +10,25 @@
     {
         "WelcomeMessageID": 3,
         "Message": "Welcome {user}! \n \nThis is the start of your journey with us so please watch the {how-to-enlist} video and fill out the {application-form} at your earliest convenience. \n \nIf you have any questions, please put them here in the {help-channel} and someone will be able to help you. \n-# If you are here as a regiment representative, you can ignore this message."
+    },
+    {
+        "WelcomeMessageID": 4,
+        "Message": "{user} welcome to the 44th Regiment of Foot! We are glad to have you in our ranks, soldier. \nBefore you step onto the parade ground or deploy to the line, please make sure to check out our enlistment video and details in {how-to-enlist}, then go to {application-channel}. If you need help go to {help-channel} \nGrab your musket, polish your buttons, and prepare to hold the line! 🇬🇧⚔️\n-# If you are here as a regiment representative, you can ignore this message."
+    },
+    {
+        "WelcomeMessageID": 5,
+        "Message": "HARK! THE DRUM BEATS! \nWelcome to His Majestys 44th {user} \nAspiring young heroes yeomen, and spirited lads who wish to serve His Majesty King George III please go to {how-to-enlist} and distinguish yourself in the glorious wars. \nYou shall receive a handsome bounty in gold, smart new clothing, excellent provisions, and the chance to march with the brave {application-channel} to victory and renown! God Save the King!\n If you have any questions, please put them here in {help-channel} and someone will be able to help you. \n-# If you are here as a regiment representative, you can ignore this message. "
+    },
+    {
+        "WelcomeMessageID": 6,
+        "Message": "Congratulations to {user} on perhaps the best decision you've made today. \nIf you're wishing to join our humble band of idiots, please see {how-to-enlist} then go to {application-channel}. \nIf you have any other questions, please use this {help-channel} and one of our esteemed officers will happily assist you with (most) things. \n-# If you are here as a regiment representative, you can ignore this message."
+    },
+    {
+        "WelcomeMessageID": 7,
+        "Message": "Welcome {user} to the 44th Regiment of Foot! \n \nPlease check out the {how-to-enlist} and fill out the {application-form} at your earliest convenience. \n \nIf you have any questions, please put them here in the {help-channel} and someone will be able to help you. \n-# If you are here as a regiment representative, you can ignore this message."
+    },
+    {
+        "WelcomeMessageID": 8,
+        "Message": "Welcome {user}, you have been conscripted into the 44th Regiment of Foot. Please see {how-to-enlist} then go to {application-channel} to fill out the necessary paperwork. \nAny complaints, we don't want to hear them. Any problems, we'll happily help you here in {help-channel}!"
     }
 ]
