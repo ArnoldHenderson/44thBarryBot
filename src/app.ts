@@ -31,7 +31,7 @@ cron.schedule('* * * * *', async () => {
 */
 
 // Ping admins at 17:00 on Thursdays and Fridays for the 44th Skirmisher event
-cron.schedule('0 17 * * 4,5', async () => {
+cron.schedule('45 17 * * 5,6', async () => {
   const channel = client.channels.cache.get('1317264796000714862');
 
   if (channel && channel.isTextBased() && 'send' in channel) {
