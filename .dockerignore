@@ -1,0 +1,7 @@
+node_modules
+.gitignore
+dist
+*.code-workspace
+dockerfile
+.commandkit
+README.md
