@@ -1,13 +1,8 @@
-import { Client, Interaction } from 'discord.js';
-import cron from 'node-cron';
+import { Client, Interaction } from "discord.js";
+import cron from "node-cron";
 
 const client = new Client({
-  intents: [
-    'Guilds', 
-    'GuildMembers', 
-    'GuildMessages', 
-    'MessageContent'
-  ],
+  intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
@@ -31,15 +26,20 @@ cron.schedule('* * * * *', async () => {
 */
 
 // Ping admins at 17:00 on Thursdays and Fridays for the 44th Skirmisher event
-cron.schedule('45 17 * * 5,6', async () => {
-  const channel = client.channels.cache.get('1317264796000714862');
+cron.schedule(
+  "45 17 * * 5,6",
+  async () => {
+    const channel = client.channels.cache.get("1317264796000714862");
 
-  if (channel && channel.isTextBased() && 'send' in channel) {
-    await channel.send('<@&1317257762597634149> The 44th Skirmisher event is starting at <t:1788026400:t>, React with a ✅ if you want to admin.');
-  }
-}, {
-  timezone: 'Europe/London',
-});
-
+    if (channel && channel.isTextBased() && "send" in channel) {
+      await channel.send(
+        "<@&1317257762597634149> The 44th Skirmisher event is starting at <t:1788026400:t>, React with a ✅ if you want to admin.",
+      );
+    }
+  },
+  {
+    timezone: "Europe/London",
+  },
+);
 
 export default client;

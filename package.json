@@ -1,6 +1,6 @@
 {
-  "name": "commandkit-basic-ts",
-  "description": "A CommandKit project using TypeScript",
+  "name": "44th-Barry-Bot",
+  "description": "A Discord bot that provides utilities for the 44th Regiment of Foot",
   "version": "0.1.0",
   "type": "module",
   "private": true,
