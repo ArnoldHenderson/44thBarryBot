@@ -1,0 +1,7 @@
+services:
+  bot:
+    build: .
+    image: 44thbarry
+    env_file:
+      - .env
+    restart: unless-stopped
