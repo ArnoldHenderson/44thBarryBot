@@ -3,21 +3,31 @@ import connectMongo from "../../mongo";
 import { Logger } from "commandkit/logger";
 
 const handler: EventHandler<"guildMemberRemove"> = async (member) => {
-  // Logger.info(`Debug: Member left: ${member.user.tag} (${member.id})`);
-  if (member.guild.id !== process.env["44TH_DISCORD_GUILD_ID"]) return;
+  const guildId = process.env["44TH_DISCORD_GUILD_ID"];
+  if (member.guild.id !== guildId) return;
 
-  const config = await (await connectMongo())
-    .db("44thbarry")
-    .collection("config")
-    .findOne({ guildId: process.env["44TH_DISCORD_GUILD_ID"] });
+  try {
+    const config = await (await connectMongo())
+      .db("44thbarry")
+      .collection("config")
+      .findOne({ guildId });
+    const channelId = config?.removalChannelId;
 
-  const channel = member.guild.channels.cache.get(config?.["removalChannelId"]);
-  if (!channel || !("send" in channel)) {
-    Logger.warn(`Channel not found: ${process.env.REMOVALS_CHANNEL}`);
-    return;
+    if (!channelId) {
+      Logger.warn(`Removal channel is not configured for guild ${guildId}.`);
+      return;
+    }
+
+    const channel = await member.guild.channels.fetch(channelId);
+    if (!channel || !("send" in channel)) {
+      Logger.warn(`Removal channel not found: ${channelId}`);
+      return;
+    }
+
+    await channel.send(`Member left: *<@${member.id}>*`);
+  } catch (error) {
+    Logger.error(`Failed to send member removal message: ${error}`);
   }
-
-  channel.send(`Member left: *<@${member.id}>*`);
 };
 
 export default handler;
