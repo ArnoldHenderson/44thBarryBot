@@ -1,9 +1,12 @@
 import { Client, Interaction } from "discord.js";
+import getClient from "./app/mongo";
 import cron from "node-cron";
 
 const client = new Client({
   intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
 });
+
+getClient();
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 

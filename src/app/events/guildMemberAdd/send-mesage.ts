@@ -12,7 +12,7 @@ const handler: EventHandler<"guildMemberAdd"> = async (member) => {
   const randomMessage = randomMessageObj.Message;
 
   Logger.info(
-    `New member joined: ${member.user.tag} (${member.id}), sending welcome message (${randomMessageObj.WelcomeMessageID}).`,
+    `New member joined: ${member.user.tag} (${member.id}), sending welcome message (Message ID: ${randomMessageObj.WelcomeMessageID}).`,
   );
 
   if (!process.env.HELP_CHANNEL) {
