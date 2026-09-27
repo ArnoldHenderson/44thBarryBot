@@ -1,4 +1,5 @@
 import { Client, Interaction } from "discord.js";
+import { Logger } from "commandkit/logger";
 import getClient from "./app/mongo";
 import cron from "node-cron";
 
@@ -6,7 +7,21 @@ const client = new Client({
   intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
 });
 
-getClient();
+// Surface failures that would otherwise be swallowed silently in production
+process.on("unhandledRejection", (reason) => {
+  Logger.error(`Unhandled promise rejection: ${reason}`);
+  process.exit(1);
+});
+
+process.on("uncaughtException", (error) => {
+  Logger.error(`Uncaught exception: ${error}`);
+  process.exit(1);
+});
+
+getClient().catch(() => {
+  // Error already logged inside getClient(); exit so the container restarts and retries
+  process.exit(1);
+});
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 
