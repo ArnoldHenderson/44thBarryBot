@@ -1,7 +1,7 @@
 import { Client, Interaction } from "discord.js";
 import { Logger } from "commandkit/logger";
-import getClient from "./app/mongo";
 import cron from "node-cron";
+import connectMongo from "./app/mongo";
 
 const client = new Client({
   intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
@@ -18,8 +18,8 @@ process.on("uncaughtException", (error) => {
   process.exit(1);
 });
 
-getClient().catch(() => {
-  // Error already logged inside getClient(); exit so the container restarts and retries
+connectMongo().catch(() => {
+  // Error already logged in connectMongo(); exit so the container restarts and retries
   process.exit(1);
 });
 
