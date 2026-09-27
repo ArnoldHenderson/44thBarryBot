@@ -1,3 +1,4 @@
+import connectMongo from "@/app/mongo";
 import type { EventHandler } from "commandkit";
 import { Logger } from "commandkit/logger";
 
@@ -15,14 +16,14 @@ const handler: EventHandler<"guildMemberAdd"> = async (member) => {
     `New member joined: ${member.user.tag} (${member.id}), sending welcome message (Message ID: ${randomMessageObj.WelcomeMessageID}).`,
   );
 
-  if (!process.env.HELP_CHANNEL) {
-    Logger.error("HELP_CHANNEL environment variable not set");
-    return;
-  }
+  const config = await (await connectMongo())
+    .db("44thbarry")
+    .collection("config")
+    .findOne({ guildId: process.env["44TH_DISCORD_GUILD_ID"] });
 
-  const channel = member.guild.channels.cache.get(process.env.HELP_CHANNEL);
+  const channel = member.guild.channels.cache.get(config?.["welcomeChannelId"]);
   if (!channel || !("send" in channel)) {
-    Logger.error(`Channel not found: ${process.env.HELP_CHANNEL}`);
+    Logger.error(`Channel not found: ${config?.["welcomeChannelId"]}`);
     return;
   }
 

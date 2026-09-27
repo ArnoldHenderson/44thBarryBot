@@ -2,7 +2,7 @@ import type { ChatInputCommand, CommandData } from "commandkit";
 import connectMongo from "../../mongo";
 
 export const metadata = {
-  guilds: ["1543055338247290994"],
+  guilds: [`${process.env["44TH_DISCORD_GUILD_ID"]}`],
   userPermissions: "Administrator",
 };
 

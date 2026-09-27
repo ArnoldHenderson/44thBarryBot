@@ -60,4 +60,13 @@ cron.schedule(
   },
 );
 
+/*
+const config = await (await connectMongo())
+  .db("44thbarry")
+  .collection("config")
+  .findOne({ guildId: process.env["44TH_DISCORD_GUILD_ID"] });
+
+Logger.debug(`removals channel debug: ${config?.["removalChannelId"]}`);
+*/
+
 export default client;
