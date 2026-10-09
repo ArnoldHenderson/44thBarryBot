@@ -3,5 +3,5 @@ services:
     build: .
     image: 44thbarry
     env_file:
-      - .env
+      - stack.env
     restart: unless-stopped
