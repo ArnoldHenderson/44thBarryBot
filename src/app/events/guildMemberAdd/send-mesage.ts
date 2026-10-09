@@ -17,7 +17,7 @@ const handler: EventHandler<"guildMemberAdd"> = async (member) => {
   );
 
   const config = await (await connectMongo())
-    .db("44thbarry")
+    .db("bot-config")
     .collection("config")
     .findOne({ guildId: process.env["44TH_DISCORD_GUILD_ID"] });
 

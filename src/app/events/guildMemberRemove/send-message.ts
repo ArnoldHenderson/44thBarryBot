@@ -8,7 +8,7 @@ const handler: EventHandler<"guildMemberRemove"> = async (member) => {
 
   try {
     const config = await (await connectMongo())
-      .db("44thbarry")
+      .db("bot-config")
       .collection("config")
       .findOne({ guildId });
     const channelId = config?.removalChannelId;

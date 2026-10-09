@@ -59,7 +59,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
   // Connect to the database and handle the subcommands
   try {
     const client = await connectMongo();
-    const collection = client.db("44thbarry").collection("config");
+    const collection = client.db("bot-config").collection("config");
     const welcomeChannel = ctx.interaction.options.getChannel(
       "welcome-message-channel",
       false,
