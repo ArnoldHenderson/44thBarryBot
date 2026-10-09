@@ -2,6 +2,7 @@ import type { ChatInputCommand, CommandData } from "commandkit";
 import { EmbedBuilder } from "discord.js";
 import { Logger } from "commandkit/logger";
 import connectMongo from "../../mongo";
+import { message } from "../GeneralCommands/ping";
 
 export const metadata = {
   guilds: [`${process.env["44TH_DISCORD_GUILD_ID"]}`],
@@ -76,7 +77,30 @@ export const chatInput: ChatInputCommand = async (ctx) => {
 
   try {
     await interaction.deferReply();
-    await connectMongo();
+    const mongoClient = await connectMongo();
+    const applicationCollection = mongoClient
+      .db("bot-config")
+      .collection("rof-applications");
+
+    // Application response collections for each company
+    const skirmApplicationResponseCollection = mongoClient
+      .db("bot-config")
+      .collection("skirm-application-responses");
+    const cavApplicationResponseCollection = mongoClient
+      .db("bot-config")
+      .collection("cav-application-responses");
+    const artyApplicationResponseCollection = mongoClient
+      .db("bot-config")
+      .collection("arty-application-responses");
+    const medicApplicationResponseCollection = mongoClient
+      .db("bot-config")
+      .collection("medic-application-responses");
+    const guardApplicationResponseCollection = mongoClient
+      .db("bot-config")
+      .collection("guard-application-responses");
+    const navyApplicationResponseCollection = mongoClient
+      .db("bot-config")
+      .collection("navy-application-responses");
 
     if (interaction.options.getSubcommand() === "send-application-channel") {
       const channel = interaction.options.getChannel("application-channel");
@@ -141,7 +165,24 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           iconURL: "https://44thholdfast.com/android-chrome-512x512.png",
         });
 
-      await targetChannel.send({ embeds: [ApplicationEmbedAndButtons] });
+      if (await applicationCollection.findOne({ exists: true })) {
+        await interaction.editReply(
+          `An application already exists in <#${targetChannel.id}>.`,
+        );
+        return;
+      }
+
+      const applicationMsg = await targetChannel.send({
+        embeds: [ApplicationEmbedAndButtons],
+      });
+
+      await applicationCollection.insertOne({
+        exists: true,
+        messageId: applicationMsg.id,
+        channelId: targetChannel.id,
+        createdAt: new Date(),
+      });
+
       await interaction.editReply(
         `Application sent to <#${targetChannel.id}>.`,
       );
@@ -149,8 +190,31 @@ export const chatInput: ChatInputCommand = async (ctx) => {
     }
 
     if (interaction.options.getSubcommand() === "delete-application") {
+      const application = await applicationCollection.findOne({ exists: true });
+      if (!application) {
+        await interaction.editReply("There is no application to delete.");
+        return;
+      }
+
+      const applicationChannel = await interaction.guild?.channels.fetch(
+        application.channelId,
+      );
+      if (!applicationChannel?.isTextBased()) {
+        await interaction.editReply(
+          "The application channel could not be found.",
+        );
+        return;
+      }
+
+      const applicationMessage = await applicationChannel.messages.fetch(
+        application.messageId,
+      );
+      await applicationMessage.delete();
+      await applicationCollection.deleteOne({ _id: application._id });
+
       await interaction.editReply("Application deleted.");
     }
+    //
   } catch (error) {
     Logger.error(error);
     const errorMessage = "An error occurred while executing the command.";
