@@ -14,6 +14,7 @@ compiled-commandkit.config.mjs
 # env
 **/*.env*
 !**/*.env.example*
+stack.env
 
 # logging
 logs
