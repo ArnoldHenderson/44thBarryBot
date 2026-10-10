@@ -1,5 +1,10 @@
-import type { ChatInputCommand, CommandData } from "commandkit";
-import { EmbedBuilder } from "discord.js";
+import { type ChatInputCommand, type CommandData } from "commandkit";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+} from "discord.js";
 import { Logger } from "commandkit/logger";
 import connectMongo from "../../mongo";
 import { message } from "../GeneralCommands/ping";
@@ -27,8 +32,29 @@ export const command: CommandData = {
           channel_types: [0],
         },
         {
-          name: "skrim-minimum-rank",
-          description: "The role for the Skrim company",
+          name: "review-channel-skirm",
+          description:
+            "The channel where submitted applications are reviewed for the Skirmishers",
+          type: 7,
+          required: true,
+          channel_types: [0],
+        },
+        {
+          name: "reviewer-role-skirm",
+          description:
+            "The role allowed to review applications for the Skirmishers",
+          type: 8,
+          required: true,
+        },
+        {
+          name: "accepted-role-skirm",
+          description: "The role for accepted Skirmishers applications",
+          type: 8,
+          required: true,
+        },
+        {
+          name: "skirm-minimum-rank",
+          description: "The role for the Skirmishers company",
           type: 8,
           required: true,
         },
@@ -82,26 +108,7 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       .db("bot-config")
       .collection("rof-applications");
 
-    // Application response collections for each company
-    const skirmApplicationResponseCollection = mongoClient
-      .db("bot-config")
-      .collection("skirm-application-responses");
-    const cavApplicationResponseCollection = mongoClient
-      .db("bot-config")
-      .collection("cav-application-responses");
-    const artyApplicationResponseCollection = mongoClient
-      .db("bot-config")
-      .collection("arty-application-responses");
-    const medicApplicationResponseCollection = mongoClient
-      .db("bot-config")
-      .collection("medic-application-responses");
-    const guardApplicationResponseCollection = mongoClient
-      .db("bot-config")
-      .collection("guard-application-responses");
-    const navyApplicationResponseCollection = mongoClient
-      .db("bot-config")
-      .collection("navy-application-responses");
-
+    // Handle the "send-application-channel" subcommand
     if (interaction.options.getSubcommand() === "send-application-channel") {
       const channel = interaction.options.getChannel("application-channel");
       const targetChannel = channel
@@ -112,6 +119,37 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         return;
       }
 
+      const reviewChannel = interaction.options.getChannel(
+        "review-channel-skirm",
+      );
+
+      const targetReviewChannel = reviewChannel
+        ? await interaction.guild?.channels.fetch(reviewChannel.id)
+        : null;
+      if (!targetReviewChannel?.isTextBased()) {
+        await interaction.editReply(
+          "Choose a text review channel for the Skirmishers.",
+        );
+        return;
+      }
+
+      const reviewerRole = interaction.options.getRole("reviewer-role-skirm");
+      if (!reviewerRole) {
+        await interaction.editReply(
+          "Choose an application reviewer role for the Skirmishers.",
+        );
+        return;
+      }
+
+      const acceptedRole = interaction.options.getRole("accepted-role-skirm");
+      if (!acceptedRole) {
+        await interaction.editReply(
+          "Choose an accepted role for the Skirmishers.",
+        );
+        return;
+      }
+
+      // Send the application embed and buttons to the target channel
       const minimumRanks = {
         skrim: interaction.options.getRole("skrim-minimum-rank"),
         cav: interaction.options.getRole("cav-minimum-rank"),
@@ -121,7 +159,8 @@ export const chatInput: ChatInputCommand = async (ctx) => {
         navy: interaction.options.getRole("navy-minimum-rank"),
       };
 
-      const ApplicationEmbedAndButtons = new EmbedBuilder()
+      // Create the application embed and buttons
+      const ApplicationEmbed = new EmbedBuilder()
         .setColor(14803200)
         .setTitle("44th Specials and Auxiliary Application")
         .setAuthor({
@@ -165,6 +204,24 @@ export const chatInput: ChatInputCommand = async (ctx) => {
           iconURL: "https://44thholdfast.com/android-chrome-512x512.png",
         });
 
+      // Function to create a button with a given ID and label
+      const makeButton = (id: string, label: string) =>
+        new ButtonBuilder()
+          .setCustomId(id)
+          .setLabel(label)
+          .setStyle(ButtonStyle.Primary);
+
+      const buttonRow1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        makeButton("apply-skrim", "Apply for Skirmishers"),
+        makeButton("apply-cav", "Apply for Cavalry"),
+        makeButton("apply-arty", "Apply for Artillery"),
+      );
+      const buttonRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        makeButton("apply-medic", "Apply for Medic"),
+        makeButton("apply-guard", "Apply for Guard"),
+        makeButton("apply-navy", "Apply for Navy"),
+      );
+
       if (await applicationCollection.findOne({ exists: true })) {
         await interaction.editReply(
           `An application already exists in <#${targetChannel.id}>.`,
@@ -173,13 +230,17 @@ export const chatInput: ChatInputCommand = async (ctx) => {
       }
 
       const applicationMsg = await targetChannel.send({
-        embeds: [ApplicationEmbedAndButtons],
+        embeds: [ApplicationEmbed],
+        components: [buttonRow1, buttonRow2],
       });
 
       await applicationCollection.insertOne({
         exists: true,
         messageId: applicationMsg.id,
         channelId: targetChannel.id,
+        reviewChannelId: targetReviewChannel.id,
+        reviewerRoleId: reviewerRole.id,
+        guildId: interaction.guildId,
         createdAt: new Date(),
       });
 
