@@ -27,7 +27,7 @@ connectMongo().catch(() => {
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 
-client.once("ready", () => {
+client.once("clientReady", () => {
   Logger.info("Logging to uptime kuma");
   if (process.env.UPTIME_KUMA_PUSH_URL) {
     Logger.info(
