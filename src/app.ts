@@ -29,7 +29,11 @@ client.login(process.env.DISCORD_BOT_TOKEN);
 
 client.once("ready", () => {
   Logger.info("Logging to uptime kuma");
-
+  if (process.env.UPTIME_KUMA_PUSH_URL) {
+    Logger.info(
+      "Uptime Push URL is set. Will log to Uptime Kuma or any service that supports it.",
+    );
+  }
   isReady = true;
 });
 
