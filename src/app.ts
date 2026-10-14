@@ -3,6 +3,8 @@ import { Logger } from "commandkit/logger";
 import cron from "node-cron";
 import connectMongo from "./app/mongo";
 
+let isReady = false;
+
 const client = new Client({
   intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
 });
@@ -25,10 +27,36 @@ connectMongo().catch(() => {
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 
+if (client.isReady()) {
+  Logger.info("Logging to uptime kuma");
+
+  const isReady = true;
+}
+
 /*
    Below are cron jobs that run on a schedule. They are currently commented out, but can be enabled if needed.
    These cron jobs are used for pining admins at event times. These in theory will work around daylight savings time, but may need to be adjusted if the event times change.
 */
+
+cron.schedule(
+  "* * * * *",
+  async () => {
+    if (isReady) {
+      if (process.env.UPTIME_KUMA_PUSH_URL) {
+        const pushURL: string = process.env.UPTIME_KUMA_PUSH_URL!;
+
+        const push = async () => {
+          await fetch(pushURL);
+          console.log("Pushed!");
+        };
+        push();
+      }
+    }
+  },
+  {
+    timezone: "Europe/London",
+  },
+);
 
 // Test cron job that runs every minute and sends a message to a specific channel
 /*
