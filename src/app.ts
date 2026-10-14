@@ -27,11 +27,11 @@ connectMongo().catch(() => {
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 
-if (client.isReady()) {
+client.once("ready", () => {
   Logger.info("Logging to uptime kuma");
 
-  const isReady = true;
-}
+  isReady = true;
+});
 
 /*
    Below are cron jobs that run on a schedule. They are currently commented out, but can be enabled if needed.
