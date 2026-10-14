@@ -51,7 +51,6 @@ cron.schedule(
 
         const push = async () => {
           await fetch(pushURL);
-          console.log("Pushed!");
         };
         push();
       }
