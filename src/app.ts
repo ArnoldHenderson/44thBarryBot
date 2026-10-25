@@ -25,7 +25,14 @@ connectMongo().catch(() => {
   process.exit(1);
 });
 
-client.login(process.env.DISCORD_BOT_TOKEN);
+console.log(
+  `[startup] push URL set: ${Boolean(process.env.UPTIME_KUMA_PUSH_URL)}`,
+);
+
+client.login(process.env.DISCORD_BOT_TOKEN).catch((error) => {
+  console.error(`Discord login failed: ${error}`);
+  process.exit(1);
+});
 
 client.once("clientReady", () => {
   Logger.info("Logging to uptime kuma");
@@ -45,17 +52,17 @@ client.once("clientReady", () => {
 cron.schedule(
   "* * * * *",
   async () => {
-    if (isReady) {
+    if (isReady || client.isReady()) {
       if (process.env.UPTIME_KUMA_PUSH_URL) {
         try {
           const res = await fetch(process.env.UPTIME_KUMA_PUSH_URL, {
             signal: AbortSignal.timeout(10_000),
           });
           if (!res.ok) {
-            Logger.error(`Uptime Kuma push returned HTTP ${res.status}`);
+            console.error(`Uptime Kuma push returned HTTP ${res.status}`);
           }
         } catch (error) {
-          Logger.error(`Uptime Kuma push failed: ${error}`);
+          console.error(`Uptime Kuma push failed: ${error}`);
         }
       }
     }
