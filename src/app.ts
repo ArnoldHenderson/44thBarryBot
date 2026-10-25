@@ -52,6 +52,7 @@ client.once("clientReady", () => {
 cron.schedule(
   "* * * * *",
   async () => {
+    Logger.info("DEBUG: Running uptime kuma cron job");
     if (isReady || client.isReady()) {
       if (process.env.UPTIME_KUMA_PUSH_URL) {
         try {
@@ -59,10 +60,10 @@ cron.schedule(
             signal: AbortSignal.timeout(10_000),
           });
           if (!res.ok) {
-            console.error(`Uptime Kuma push returned HTTP ${res.status}`);
+            Logger.error(`Uptime Kuma push returned HTTP ${res.status}`);
           }
         } catch (error) {
-          console.error(`Uptime Kuma push failed: ${error}`);
+          Logger.error(`Uptime Kuma push failed: ${error}`);
         }
       }
     }
