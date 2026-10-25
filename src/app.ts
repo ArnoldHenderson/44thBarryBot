@@ -49,26 +49,23 @@ client.once("clientReady", () => {
    These cron jobs are used for pining admins at event times. These in theory will work around daylight savings time, but may need to be adjusted if the event times change.
 */
 
-cron.schedule(
-  "* * * * *",
-  async () => {
-    Logger.info("DEBUG: Running uptime kuma cron job");
-    if (isReady || client.isReady()) {
-      if (process.env.UPTIME_KUMA_PUSH_URL) {
-        try {
-          const res = await fetch(process.env.UPTIME_KUMA_PUSH_URL, {
-            signal: AbortSignal.timeout(10_000),
-          });
-          if (!res.ok) {
-            Logger.error(`Uptime Kuma push returned HTTP ${res.status}`);
-          }
-        } catch (error) {
-          Logger.error(`Uptime Kuma push failed: ${error}`);
+cron.schedule("* * * * *", async () => {
+  // Logger.info("DEBUG: Running uptime kuma cron job");
+  if (isReady || client.isReady()) {
+    if (process.env.UPTIME_KUMA_PUSH_URL) {
+      try {
+        const res = await fetch(process.env.UPTIME_KUMA_PUSH_URL, {
+          signal: AbortSignal.timeout(10_000),
+        });
+        if (!res.ok) {
+          Logger.error(`Uptime Kuma push returned HTTP ${res.status}`);
         }
+      } catch (error) {
+        Logger.error(`Uptime Kuma push failed: ${error}`);
       }
     }
-  },
-);
+  }
+});
 
 // Test cron job that runs every minute and sends a message to a specific channel
 /*
