@@ -47,12 +47,16 @@ cron.schedule(
   async () => {
     if (isReady) {
       if (process.env.UPTIME_KUMA_PUSH_URL) {
-        const pushURL: string = process.env.UPTIME_KUMA_PUSH_URL!;
-
-        const push = async () => {
-          await fetch(pushURL);
-        };
-        push();
+        try {
+          const res = await fetch(process.env.UPTIME_KUMA_PUSH_URL, {
+            signal: AbortSignal.timeout(10_000),
+          });
+          if (!res.ok) {
+            Logger.error(`Uptime Kuma push returned HTTP ${res.status}`);
+          }
+        } catch (error) {
+          Logger.error(`Uptime Kuma push failed: ${error}`);
+        }
       }
     }
   },
