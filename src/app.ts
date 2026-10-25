@@ -68,9 +68,6 @@ cron.schedule(
       }
     }
   },
-  {
-    timezone: "Europe/London",
-  },
 );
 
 // Test cron job that runs every minute and sends a message to a specific channel
